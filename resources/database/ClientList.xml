@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<data>
+	<client>
+		<name>Echo</name>
+		<folderPath>you/suck/dude/folder</folderPath>
+		<excelPath>excel/is/cool</excelPath>
+		<office365Email>jimblo@365.com</office365Email>
+	</client>
+	<client>
+		<name>Fox</name>
+		<folderPath>you/suck/dude/folder</folderPath>
+		<excelPath>excel/is/cool</excelPath>
+		<office365Email>jimblo@365.com</office365Email>
+	</client>
+</data>
