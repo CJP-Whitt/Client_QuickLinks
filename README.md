@@ -1,2 +1,17 @@
 # Client_QuickLinks
-Quick links app for IT companies to access client excel sheets, and client Microsoft accounts with the click of a button
+Quick links app for IT companies to access client root folders, client excel sheets, and client Microsoft accounts with the click of a button.
+
+## Features
+- New Client
+- Edit Client
+- Remove Client
+- Save/read Client Tables
+- Client Folder
+- Client Excel
+- Client Email
+
+## How it works
+- The app holds all the Client data in xml files located in Users\_UserName_\AppData\Local\Quick Links\resources\database\*.xml
+- App can have multiple xml sheets and can switch between mutiple
+
+
