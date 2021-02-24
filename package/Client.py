@@ -22,15 +22,14 @@ class Client:
     def isValid(self):
         params = (self.name, self.folderPath, self.excelPath, self.office365Email)
 
-        # Check for empty strings, or only whitespace strings
-        for i in params:
-            if not i:
-                return False
-            if i.isspace():
+        # Check for empty strings, or only whitespace strings. Exclude email
+        for i in params[0:2]:
+            if not i or i.isspace():
                 return False
 
-        # Check for space in email
-        if ' ' in self.office365Email:
-            return False
+        # Check for space in email if one exists
+        if self.office365Email is not None:
+            if ' ' in self.office365Email:
+                return False
 
         return True

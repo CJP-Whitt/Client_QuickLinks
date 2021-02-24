@@ -1,15 +1,39 @@
 <?xml version="1.0" ?>
 <data>
 	<client>
-		<name>Echo</name>
-		<folderPath>you/suck/dude/folder</folderPath>
-		<excelPath>excel/is/cool</excelPath>
-		<office365Email>jimblo@365.com</office365Email>
+		<name>aa</name>
+		<folderPath>C:/Users/Whitt/Desktop/test me</folderPath>
+		<excelPath>C:/Users/Whitt/Desktop/test me/hello there.txt</excelPath>
+		<office365Email>s</office365Email>
 	</client>
 	<client>
-		<name>Fox</name>
-		<folderPath>you/suck/dude/folder</folderPath>
-		<excelPath>excel/is/cool</excelPath>
-		<office365Email>jimblo@365.com</office365Email>
+		<name>Carson</name>
+		<folderPath>C:/Users/Whitt/Desktop/Git_Repos/Client_QuickLinks/dist</folderPath>
+		<excelPath>C:/Users/Whitt/Desktop/Git_Repos/Client_QuickLinks/entry_point.spec</excelPath>
+		<office365Email/>
+	</client>
+	<client>
+		<name>dadasda</name>
+		<folderPath>C:/Users/Whitt/Desktop/Git_Repos/Client_QuickLinks/__pycache__</folderPath>
+		<excelPath>C:/Users/Whitt/Desktop/Git_Repos/Client_QuickLinks/__pycache__/entry_point.cpython-37.pyc</excelPath>
+		<office365Email/>
+	</client>
+	<client>
+		<name>Darin</name>
+		<folderPath>C:/Users/Whitt/Desktop/Git_Repos/Client_QuickLinks/build</folderPath>
+		<excelPath>C:/Users/Whitt/Desktop/Git_Repos/Client_QuickLinks/entry_point.py</excelPath>
+		<office365Email/>
+	</client>
+	<client>
+		<name>Jimmy</name>
+		<folderPath>C:/Users/Whitt/Desktop/Git_Repos/Client_QuickLinks/dist</folderPath>
+		<excelPath>C:/Users/Whitt/Desktop/Git_Repos/Client_QuickLinks/dist/Quick Links.zip</excelPath>
+		<office365Email>Dude</office365Email>
+	</client>
+	<client>
+		<name>Mom</name>
+		<folderPath>C:/Users/Whitt/Desktop/Git_Repos/Client_QuickLinks/build</folderPath>
+		<excelPath>C:/Users/Whitt/Desktop/Git_Repos/Client_QuickLinks/build/entry_point/PKG-00.pkg</excelPath>
+		<office365Email/>
 	</client>
 </data>

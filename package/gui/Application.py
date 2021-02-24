@@ -1,5 +1,4 @@
-import sys
-import os
+import os, sys, subprocess
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -8,6 +7,22 @@ from ..ClientFileParser import ClientFileParser
 from .NewClientDialog import NewClientDialog
 from .EditClientDialog import EditClientDialog
 from package.utils import is_frozen, frozen_temp_path
+
+
+def url_infuse(emailAddy):
+    url = r'https://login.microsoftonline.com/common/oauth2/authorize?client_id=4345a7b9-9a63-4910-a426-35363201d503' \
+          r'&redirect_uri=https%3A%2F%2Fwww.office.com%2Flanding&response_type=code%20id_token&scope=openid%20profile' \
+          r'&response_mode=form_post&nonce=637268985401811218' \
+          r'.NjdjMmM0MDEtZTY3MC00YmMwLWJmNWMtYmQyN2E5YTI1MmU3NzkyNDQxODEtYzM5OS00ZjA1LThiMGUtNzk5MjI3MGRiOWZk' \
+          r'&ui_locales=en-US&mkt=en-US&client-request-id=5a5903ca-62b6-4489-a362-200ae46d3e1b&login_hint=' + \
+          emailAddy + r'&state=bSINFLudzeImYZ55rZPUVQlLVzLYjwhBd4PV5JSpry2WYcSI_pJrUzZwl' \
+                      r'-FDED6opyApJpecivrKJXmWS8zSK8VPxCIFfnMBOwmumTzQUjxN6VQ3OidM--FWwyVdk' \
+                      r'-vcC6820LOnM1uQKBVx5gIsreRaTSJW0xUWtDe_j8V9v2DKg__2Zm6B4q-DLMrEhDngMRmgzvREa0A_xGJs0LXg' \
+                      r'-EVx41D39WoPHdSjNYOMUT5pCbVQaORSQcKJHWu8Hzv98aO_1DN3_P9cQ3qwGcGFAIgLhgiVS' \
+                      r'-6jQZiy2RDNCylWdcIqPNsqqVY3nZ1VgqZL3HLELVjiAK2VYdPW8nV8mw&x-client-SKU=ID_NETSTANDARD2_0&x' \
+                      r'-client-ver=6.5.0.0 '
+    return url
+
 
 class Application:
     def __init__(self, parser, resource_dir):
@@ -29,8 +44,13 @@ class Application:
 
         self.create_window()
 
-        # Table init
+        # ***Table init*** #
         self.myTable = QTableWidget()
+
+        self.myTable.setRowCount(len(self.myParser.curClientList))
+        self.myTable.setColumnCount(5)
+        self.myTable.setHorizontalHeaderLabels((["Client Excel", "Root", "O365 Login", "", ""]))
+        self.myTable.horizontalHeader().sectionPressed.disconnect()
         self.load_table()
 
         # App start, exit when done
@@ -74,11 +94,6 @@ class Application:
         self.win.show()
 
     def load_table(self):
-        # ***Table init*** #
-        self.myTable.setRowCount(len(self.myParser.curClientList))
-        self.myTable.setColumnCount(5)
-        self.myTable.setHorizontalHeaderLabels((["Client Excel", "Root", "Office 365", "", ""]))
-
         # ***Icons init*** #
         editIcon = QIcon()
         editIcon.addFile(os.path.join(self.resource_dir, 'images\\edit.png'), QSize(24, 24))
@@ -89,7 +104,11 @@ class Application:
         dirIcon = QIcon()
         dirIcon.addFile(os.path.join(self.resource_dir, 'images\\directory.png'), QSize(24, 24))
 
+        emailIcon = QIcon()
+        emailIcon.addFile(os.path.join(self.resource_dir, 'images\\email_icon.jpg'), QSize(24, 24))
+
         # ***Buttons Init*** #
+        print(len(self.myParser.curClientList))
         for i in range(len(self.myParser.curClientList)):  # range(len(self.myParser.curClientList)):
             # Client name and excel file
             btn0 = QPushButton(self.myParser.curClientList[i].name)
@@ -103,9 +122,14 @@ class Application:
             btn1.clicked.connect(lambda *args, row=i, column=1: self.open_dir(row, column))
             self.myTable.setCellWidget(i, 1, btn1)
             # Client email link
-            btn2 = QPushButton(self.myParser.curClientList[i].office365Email)
-            btn2.setStyleSheet("font: 14px Arial, sans-serif;")
-            btn2.clicked.connect(lambda *args, row=i, column=2: self.open_email(row, column))
+            email = self.myParser.curClientList[i].office365Email
+            if not email:  # Only make button if an email exists
+                btn2 = QPushButton()
+                btn2.setEnabled(False)
+            else:
+                btn2 = QPushButton()
+                btn2.setIcon(emailIcon)
+                btn2.clicked.connect(lambda *args, row=i, column=2: self.open_email(row, column))
             self.myTable.setCellWidget(i, 2, btn2)
             # Edit client button
             btn3 = QPushButton()
@@ -118,7 +142,7 @@ class Application:
             btn4.clicked.connect(lambda *args, row=i, column=4: self.del_client(row, column))
             self.myTable.setCellWidget(i, 4, btn4)
 
-        self.myTable.setAlternatingRowColors(True)
+        self.myTable.setAlternatingRowColors(False)
         self.win.setCentralWidget(self.myTable)
 
         # ***Extra settings*** #
@@ -130,6 +154,7 @@ class Application:
         self.myTable.verticalScrollBar().setValue(True)
         self.myTable.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.win.resize(self.myTable.sizeHint().width(), 400)
+        self.myTable.show()
         self.win.show()
 
     def edit_client(self, r, c):
@@ -137,6 +162,7 @@ class Application:
 
         name, dirPth, filePth, email, state = EditClientDialog.getInputs(self.resource_dir, self.myParser.curClientList[r])
         if not state:
+            self.statusBar.showMessage('Client edit cancelled', 5000)
             return
 
         newClient = Client(name, dirPth, filePth, email)
@@ -169,12 +195,13 @@ class Application:
         self.statusBar.showMessage('Creating new client...', 5000)
 
         name, dirPth, filePth, email, state = NewClientDialog.getInputs(self.resource_dir)
-        if not state:
-            return
 
+        if not state:
+            self.statusBar.showMessage('Client creation cancelled', 5000)
+            return
         newClient = Client(name, dirPth, filePth, email)
         if not newClient.isValid():
-            self.statusBar.showMessage('Aborting Client Creation...Invalid Paramaters', 5000)
+            self.statusBar.showMessage('Aborting client creation...Invalid paramaters', 5000)
             return
 
         self.myParser.write_client(newClient)
@@ -188,34 +215,28 @@ class Application:
 
     def exp_file(self):
         string = self.myParser.save_recovery()
-        self.statusBar.showMessage('Exporting to file: ' + string, 5000)
+        self.statusBar.showMessage('Exporting to file: ' + string)
 
     def open_excel(self, r, c):
         self.statusBar.showMessage('Opening excel for: ' + self.myParser.curClientList[r].name, 5000)
-        os.system('excel ' + self.myParser.curClientList[r].excelPath)
+        print('start excel ' + '"' + self.myParser.curClientList[r].excelPath + '"')
+        os.system('start excel ' + '"' + self.myParser.curClientList[r].excelPath + '"')
 
     def open_dir(self, r, c):
         self.statusBar.showMessage('Opening root dir for: ' + self.myParser.curClientList[r].name, 5000)
-        os.system('start ' + self.myParser.curClientList[r].folderPath)
+        pathString = r"{}".format(self.myParser.curClientList[r].folderPath)
+        print('start "" ' + '"' + pathString + '"')
+        os.system('start "" ' + '"' + pathString + '"')
 
     def open_email(self, r, c):
         # self.statusBar.showMessage('Email copied to clipboard: ' + self.myParser.curClientList[r].office365Email, 5000)
         # os.system('start https://login.microsoftonline.com/')
         # os.system('echo ' + self.myParser.curClientList[r].office365Email + '|clip')
-        self.statusBar.showMessage('Opening email for: ' + self.myParser.curClientList[r].name, 5000)
-        url = r'"https://login.microsoftonline.com/common/oauth2/authorize?client_id=4345a7b9-9a63-4910-a426' \
-              r'-35363201d503&redirect_uri=https%3A%2F%2Fwww.office.com%2Flanding&response_type=code%20id_token&scope' \
-              r'=openid%20profile&response_mode=form_post&nonce=637268985401811218' \
-              r'.NjdjMmM0MDEtZTY3MC00YmMwLWJmNWMtYmQyN2E5YTI1MmU3NzkyNDQxODEtYzM5OS00ZjA1LThiMGUtNzk5MjI3MGRiOWZk' \
-              r'&ui_locales=en-US&mkt=en-US&client-request-id=5a5903ca-62b6-4489-a362-200ae46d3e1b&login_hint=' + \
-              self.myParser.curClientList[
-                  r].office365Email + r'&state=bSINFLudzeImYZ55rZPUVQlLVzLYjwhBd4PV5JSpry2WYcSI_pJrUzZwl' \
-                                      r'-FDED6opyApJpecivrKJXmWS8zSK8VPxCIFfnMBOwmumTzQUjxN6VQ3OidM--FWwyVdk' \
-                                      r'-vcC6820LOnM1uQKBVx5gIsreRaTSJW0xUWtDe_j8V9v2DKg__2Zm6B4q-DLMrEhDngMRmgzvREa0A_xGJs0LXg' \
-                                      r'-EVx41D39WoPHdSjNYOMUT5pCbVQaORSQcKJHWu8Hzv98aO_1DN3_P9cQ3qwGcGFAIgLhgiVS' \
-                                      r'-6jQZiy2RDNCylWdcIqPNsqqVY3nZ1VgqZL3HLELVjiAK2VYdPW8nV8mw&x-client-SKU=ID_NETSTANDARD2_0&x-client-ver' \
-                                      r'=6.5.0.0" '
-        os.system('start "" ' + url)
+        self.statusBar.showMessage('Opening O365 with: ' + self.myParser.curClientList[r].office365Email, 5000)
+        url = url_infuse(self.myParser.curClientList[r].office365Email)
+        print('start "" "' + url + '"')
+        os.system('start "" "' + url + '"')
 
     def fit_window(self):
         self.win.resize(self.myTable.sizeHint().width(), 400)
+
