@@ -27,7 +27,8 @@ class ClientFileParser:
         self.root = self.tree.getroot()
         self.verbose = verbose
 
-        self.curClientList = self.read_clients()
+        self.curClientList = None
+        self.read_clients()
 
     def read_clients(self):
         # Read all clients from the xml Client List file and return list of objs

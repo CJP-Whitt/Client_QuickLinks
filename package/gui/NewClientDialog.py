@@ -75,6 +75,8 @@ class NewClientDialog(QDialog):
         dirPth = dialog.dirBox.text()
         filePth = dialog.excelBox.text()
         email = dialog.emailBox.text()
+        if email.isspace() or not email:
+            email = None
 
         return name, dirPth, filePth, email, result == QDialog.Accepted
 
