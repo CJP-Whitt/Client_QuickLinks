@@ -5,7 +5,7 @@ Quick links app for IT companies to access client root folders, client excel she
 - New Client
 - Edit Client
 - Remove Client
-- Save/read Client Tables
+- Save/Read Client XML Files (*In Progress)
 - Client Folder
 - Client Excel
 - Client Email
