@@ -6,9 +6,9 @@ Quick links app for IT companies to access client root folders, client excel she
 - Edit Client
 - Remove Client
 - Save/Read Client XML Files (*In Progress)
-- Client Folder
-- Client Excel
-- Client Email
+- Client Folder Quick Link
+- Client Excel File Quick Link
+- Client Email Login Quick Link
 
 ## How it works
 - The app holds all the Client data in xml files located in Users\_UserName_\AppData\Local\Quick Links\resources\database\*.xml
